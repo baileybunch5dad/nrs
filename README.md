@@ -1,0 +1,2 @@
+# nrs
+non recursive solver
