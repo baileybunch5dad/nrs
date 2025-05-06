@@ -38,6 +38,18 @@ strboard = '''
 |45 3 8  2|
 '''
 
+strboard='''
+|  3    6 |
+|    51   |
+| 84  31  |
+| 7   5  9|
+|69    2  |
+|   7 8 5 |
+| 5 8    6|
+|4      9 |
+|  8   4  |
+'''
+
 mlines = strboard.splitlines()
 
 def col(pos):
@@ -159,6 +171,28 @@ def applyrule(rule, candidates, pos):
     numRemoved += rule(candidates, pos, samebox(pos))
     return numRemoved
 
+def ninesixthree(candidates, pos, vec9):
+    numRemovals = 0
+    this3 = vec9.intersection(samebox(pos))
+    vec9.difference_update(this3)
+    other6 = vec9
+    this3elements = [candidates[i] for i in this3]
+    this3elements = [x for xx in this3elements for x in xx]
+    this3elements = set(this3elements)
+    other6elements = [candidates[i] for i in other6]
+    other6elements = [x for xx in other6elements for x in xx]
+    other6elements = set(other6elements)
+    this3elements.difference_update(other6elements)
+    required = this3elements
+    if required is not None:
+        for r in required:
+            if r in candidates[pos]:
+                print(f"Rmoving {r} from {pos2rowcol(pos)} because it is required in {other6}")
+                candidates[pos].remove(r)
+                numRemovals += 1
+    return numRemovals
+
+
 def norequiredelsewhere(candidates,pos):
     numRemovals = 0
     posbox = samebox(pos)
@@ -173,42 +207,44 @@ def norequiredelsewhere(candidates,pos):
     for dc in diffcol:
         col9 = set(samecol(dc))
         col9.add(dc)
-        this3 = col9.intersection(posbox)
-        col9.difference_update(this3)
-        other6 = col9
-        this3elements = [candidates[i] for i in this3]
-        this3elements = [x for xx in this3elements for x in xx]
-        this3elements = set(this3elements)
-        other6elements = [candidates[i] for i in other6]
-        other6elements = [x for xx in other6elements for x in xx]
-        other6elements = set(other6elements)
-        this3elements.difference_update(other6elements)
-        required = this3elements
-        if required is not None:
-            for r in required:
-                if r in candidates[pos]:
-                    print(f"Rmoving {r} from {pr},{pc} because it is required in column {dc}")
-                    candidates[pos].remove(r)
-                    numRemovals += 1
+        numRemovals += ninesixthree(candidates, pos, col9)
+        # this3 = col9.intersection(posbox)
+        # col9.difference_update(this3)
+        # other6 = col9
+        # this3elements = [candidates[i] for i in this3]
+        # this3elements = [x for xx in this3elements for x in xx]
+        # this3elements = set(this3elements)
+        # other6elements = [candidates[i] for i in other6]
+        # other6elements = [x for xx in other6elements for x in xx]
+        # other6elements = set(other6elements)
+        # this3elements.difference_update(other6elements)
+        # required = this3elements
+        # if required is not None:
+        #     for r in required:
+        #         if r in candidates[pos]:
+        #             print(f"Rmoving {r} from {pr},{pc} because it is required in column {dc}")
+        #             candidates[pos].remove(r)
+        #             numRemovals += 1
     for dr in diffrow:
         row9 = set(samerow(dr))
         row9.add(dr)
-        this3 = row9.intersection(posbox)
-        row9.difference_update(this3)
-        other6 = row9
-        this3elements = [candidates[i] for i in this3]
-        this3elements = [x for xx in this3elements for x in xx]
-        this3elements = set(this3elements)
-        other6elements = [candidates[i] for i in other6]
-        other6elements = [x for xx in other6elements for x in xx]
-        other6elements = set(other6elements)
-        required = this3elements.difference_update(other6elements)
-        if required is not None:
-            for r in required:
-                if r in candidates[pos]:
-                    print(f"Rmoving {r} from {pr},{pc} because it is required in row {dr}")
-                    candidates[pos].remove(r)
-                    numRemovals += 1
+        numRemovals += ninesixthree(candidates, pos, row9)
+        # this3 = row9.intersection(posbox)
+        # row9.difference_update(this3)
+        # other6 = row9
+        # this3elements = [candidates[i] for i in this3]
+        # this3elements = [x for xx in this3elements for x in xx]
+        # this3elements = set(this3elements)
+        # other6elements = [candidates[i] for i in other6]
+        # other6elements = [x for xx in other6elements for x in xx]
+        # other6elements = set(other6elements)
+        # required = this3elements.difference_update(other6elements)
+        # if required is not None:
+        #     for r in required:
+        #         if r in candidates[pos]:
+        #             print(f"Rmoving {r} from {pr},{pc} because it is required in row {dr}")
+        #             candidates[pos].remove(r)
+        #             numRemovals += 1
     return numRemovals                    
 
 
